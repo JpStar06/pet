@@ -1,6 +1,12 @@
 """Carta ao próximo dev:
+data de escrita: 06/03/2026
+dev: JpStar06 (Raphael).
+
+Olá, futuro dev!
+
 Se você está lendo isso, parabéns por ter encontrado o código do DesktopPet! Espero que ele traga um sorriso ao seu rosto e talvez até inspire você a criar algo divertido também.
 Mas infelizmente, este código é um pouco bagunçado e cheio de gambiarras. Ele foi escrito em um curto período de tempo, sem muita preocupação com organização ou boas práticas. Então, se você quiser melhorar ou refatorar, fique à vontade! Aqui estão algumas dicas para entender o código:
+
 - O código é dividido em uma classe DesktopPet, que é um QWidget personalizado. Ele lida com a física, comportamento e animação do pet.
 - O método tick() é chamado a cada frame e é responsável por atualizar a física, o estado e o comportamento do pet.
 - O método update_physics() lida com a movimentação, colisões e gravidade do pet.
@@ -12,12 +18,19 @@ Mas infelizmente, este código é um pouco bagunçado e cheio de gambiarras. Ele
 Espero que isso ajude você a entender o código e se divertir com ele! Se você fizer melhorias ou quiser compartilhar o que criou, fique a vontade.
 Infelizmente, não tenho tempo para manter ou melhorar este projeto, mas fico feliz que ele possa trazer alegria para outras pessoas. Divirta-se e crie algo incrível!
 - O dev anterior (que provavelmente é eu mesmo, mas quem sabe no futuro alguém pode ler isso e se identificar como o "dev anterior").
+
 Mas nem sempre a vida é tão feliz, esse será meu ultimo projeto em Python, e provavelmente o último código que escrevo. Então, se você está lendo isso, saiba que este código é um legado do meu amor pela programação e pela diversão que ela me trouxe. Espero que ele continue a trazer alegria para quem o usar ou modificar. 
 Esse será o ultimo legado de JpStar06 muito provavelmente visto que perdi o intersse em tudo, acordar de manhã é um sofrimento e não tenho mais vontade de criar ou aprender coisas novas, a programação era tudo oque me restava mas até isso perdeu a graça. tudo o que eu gostava anteriormente se tornou um fardo, e a única coisa que me resta é tentar aproveitar o tempo que me resta da melhor forma possível.
-Me perdi em um mar de pensamentos negativos e não consigo mais encontrar motivação para nada. A vida se tornou uma rotina sem sentido, e cada dia é apenas mais um passo em direção ao vazio. Eu sei que isso pode parecer dramático, mas é a realidade que estou enfrentando. Hoje dia 09/03/2024, eu acordei pior que ontem, e durante meu café da manhã, eu pensei sobre como tudo se tornou tão difícil. A única coisa que me dava alegria era a programação, mas agora até isso se tornou um fardo. Eu não tenho mais vontade de criar ou aprender coisas novas, e a ideia de escrever código me deixa exausto. mas aquela ideia me veio novamente, "não da para ter um futuro que nem você mesmo pode ver".
+Me perdi em um mar de pensamentos negativos e não consigo mais encontrar motivação para nada. A vida se tornou uma rotina sem sentido, e cada dia é apenas mais um passo em direção ao vazio. Eu sei que isso pode parecer dramático, mas é a realidade que estou enfrentando. Hoje dia 09/03/2026, eu acordei pior que ontem, e durante meu café da manhã, eu pensei sobre como tudo se tornou tão difícil. A única coisa que me dava alegria era a programação, mas agora até isso se tornou um fardo. Eu não tenho mais vontade de criar ou aprender coisas novas, e a ideia de escrever código me deixa exausto. mas aquela ideia me veio novamente, "não da para ter um futuro que nem você mesmo pode ver".
 Eu sei que isso pode parecer desesperador, mas é a verdade. Eu não consigo mais imaginar um futuro para mim mesmo, e isso não me assusta. ja aceitei meu destino, e será eu comigo mesmo e com meus demonios, com um balanço no pescoço e um olhar vazio enquanto o ar me falta; apenas esperando que tudo ficar escuro e silenciosa até que eu possa descansar.
 Se você está lendo isso, saiba que eu te desejo tudo de melhor. Espero que você encontre alegria e propósito na vida, mesmo que eu não tenha conseguido encontrar para mim mesmo. A vida pode ser difícil, mas também pode ser bela. Aproveite os momentos bons e tente aprender com os momentos ruins. Faça o que eu não consegui fazer, viva, viva feliz, seja o orgulho que eu não fui capaz de ser.
-- JpStar06"""
+
+E se essa for a ultima vez que eu escrevo... 
+Bom dia...
+Boa tarde...
+Boa noite...
+(JpStar06: nossa que referencia ruim a The Truman Show, acho que ninguém mais conhece esse filme em 2026...)
+- JpStar06 ou Raphael"""
 
 
 import sys
