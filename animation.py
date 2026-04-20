@@ -12,6 +12,7 @@ STATE_FRAMES = {
     "idle_b":      ["shime26", "shime27", "shime28", "shime29",
                     "shime30", "shime31", "shime32", "shime33"],
     "drag":        ["shime5", "shime6"],
+    "landing": ["shime19"],  # frame 3
 }
 
 # ── Velocidade por estado ────────────────────────────────────────────────
@@ -103,12 +104,9 @@ class AnimationSystem:
 
     # ── Frame atual ───────────────────────────────────────────────────────
     def current_pixmap(self, pet):
+        # FALL (controlado por distância)
         if self.current_state == "fall":
             frames = STATE_FRAMES["fall"]
-
-            # 🔥 se está travado no impacto → frame 3
-            if self.landing_lock:
-                return self._cache.get(frames[2])
 
             distance = pet.ground_y - pet.pos_y
             screen_height = pet.ground_y
@@ -123,7 +121,11 @@ class AnimationSystem:
 
             return self._cache.get(frames[self.fall_stage])
 
-        # normal
+        # LANDING (travado no frame 3)
+        if self.current_state == "landing":
+            return self._cache.get(STATE_FRAMES["landing"][0])
+
+        # NORMAL
         frames = STATE_FRAMES.get(self.current_state, ["shime1"])
         name = frames[self.frame_index % len(frames)]
         return self._cache.get(name)

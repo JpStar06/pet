@@ -9,7 +9,11 @@ class StateMachine:
         left  = screen.left()
         right = screen.right() - pet.width()
 
-        # Indo pro climb → chegou na parede alvo
+        # 🚫 drag
+        if pet.state == "drag":
+            return
+
+        # ── climb ─────────────────────
         if pet.state == "go_to_climb":
             if pet.target_side == "left" and pet.pos_x <= left + 5:
                 pet.state = "climb"
@@ -20,7 +24,10 @@ class StateMachine:
                 pet.vel_x = 0
                 pet.vel_y = 0
 
-        # Caindo → chegou no chão
-        if pet.on_ground and pet.state == "fall":
-            pet.state = "idle"
-            pet.vel_x = 0
+        # ── queda ─────────────────────
+        if pet.on_ground:
+            if pet.state == "fall":
+                pet.state = "landing"
+        else:
+            if pet.state not in ("climb", "landing"):
+                pet.state = "fall"

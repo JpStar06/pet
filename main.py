@@ -19,6 +19,7 @@ class DesktopPet(QWidget):
         super().__init__()
         self.last_mouse_pos = None
         self.fall_time = 0
+        self.landing_timer = 0
 
         # ── Janela ────────────────────────────────────────────────────────
         self.setWindowFlags(
@@ -68,22 +69,41 @@ class DesktopPet(QWidget):
     # ── Loop principal ────────────────────────────────────────────────────
     def tick(self):
         if self.dragging:
-            self.fall_time = 0  # 🔥 evita bug de animação
+            self.fall_time = 0
             self.anim.update(self.state, self)
             self.update()
             return
+
+        # ── física ───────────────────────
+        self.physics.update()
+
+        # ── estado ──────────────────────
+        self.state_machine.update(self)
+        self.behavior.update(self)
+
+        # ── fall timer ──────────────────
         if self.state == "fall":
             self.fall_time += 1
         else:
             self.fall_time = 0
 
-        self.physics.update()
-        self.state_machine.update(self)
-        self.behavior.update(self)
-        self.anim.update(self.state, self)   # ← atualiza frame da animação
+        # ── landing timer ───────────────
+        if self.state == "landing":
+            self.landing_timer += 1
+
+            if self.landing_timer > 120:
+                self.state = "idle"
+                self.landing_timer = 0
+
+        else:
+            self.landing_timer = 0
+
+        # ── animação ────────────────────
+        self.anim.update(self.state, self)
+
+        # ── render ──────────────────────
         self.move(int(self.pos_x), int(self.pos_y))
         self.update()
-
 
     # ── Renderização ──────────────────────────────────────────────────────
     def paintEvent(self, event):
