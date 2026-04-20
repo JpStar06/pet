@@ -69,7 +69,7 @@ class DesktopPet(QWidget):
     def tick(self):
         if self.dragging:
             self.fall_time = 0  # 🔥 evita bug de animação
-            self.anim.update(self.state)
+            self.anim.update(self.state, self)
             self.update()
             return
         if self.state == "fall":
@@ -80,7 +80,7 @@ class DesktopPet(QWidget):
         self.physics.update()
         self.state_machine.update(self)
         self.behavior.update(self)
-        self.anim.update(self.state)   # ← atualiza frame da animação
+        self.anim.update(self.state, self)   # ← atualiza frame da animação
         self.move(int(self.pos_x), int(self.pos_y))
         self.update()
 

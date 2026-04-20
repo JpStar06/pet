@@ -4,11 +4,14 @@ from PySide6.QtWidgets import QApplication
 class Physics:
     GRAVITY = 0.5
     FRICTION = 0.92
+    MAX_FALL_SPEED = 3
 
     def __init__(self, pet):
         self.pet = pet
+        
 
     def update(self):
+        MAX_FALL_SPEED = 12
         screen = QApplication.primaryScreen().availableGeometry()
         left   = screen.left()
         right  = screen.right()  - self.pet.width()
@@ -18,6 +21,9 @@ class Physics:
         self.pet.vel_y += self.GRAVITY
         self.pet.pos_x += self.pet.vel_x
         self.pet.pos_y += self.pet.vel_y
+        self.pet.vel_y += self.GRAVITY
+        if self.pet.vel_y > MAX_FALL_SPEED:
+            self.pet.vel_y = MAX_FALL_SPEED
 
         # Parede esquerda
         if self.pet.pos_x <= left:
@@ -48,3 +54,5 @@ class Physics:
         # Fricção no chão (apenas em estados passivos)
         if self.pet.on_ground and self.pet.state not in ("walk", "go_to_climb", "climb"):
             self.pet.vel_x *= self.FRICTION
+
+        self.pet.ground_y = bottom

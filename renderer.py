@@ -21,7 +21,7 @@ class Renderer:
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
 
-        pixmap = pet.anim.current_pixmap()
+        pixmap = pet.anim.current_pixmap(pet)
 
         if pixmap and not pixmap.isNull():
             # Espelha horizontalmente quando andando para a esquerda
