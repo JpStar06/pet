@@ -17,6 +17,8 @@ SPRITES_DIR = "sprites/miku"   # ex: "sprites/teto" para trocar de personagem
 class DesktopPet(QWidget):
     def __init__(self):
         super().__init__()
+        self.last_mouse_pos = None
+        self.fall_time = 0
 
         # ── Janela ────────────────────────────────────────────────────────
         self.setWindowFlags(
@@ -25,7 +27,7 @@ class DesktopPet(QWidget):
             Qt.Tool
         )
         self.setAttribute(Qt.WA_TranslucentBackground)
-        self.resize(128, 128)   # tamanho maior para os sprites da Miku
+        self.resize(120, 120)   # tamanho maior para os sprites da Miku
 
         # ── Estado ────────────────────────────────────────────────────────
         self.state       = "fall"
@@ -66,17 +68,22 @@ class DesktopPet(QWidget):
     # ── Loop principal ────────────────────────────────────────────────────
     def tick(self):
         if self.dragging:
+            self.fall_time = 0  # 🔥 evita bug de animação
             self.anim.update(self.state)
             self.update()
             return
+        if self.state == "fall":
+            self.fall_time += 1
+        else:
+            self.fall_time = 0
 
         self.physics.update()
         self.state_machine.update(self)
         self.behavior.update(self)
         self.anim.update(self.state)   # ← atualiza frame da animação
-
         self.move(int(self.pos_x), int(self.pos_y))
         self.update()
+
 
     # ── Renderização ──────────────────────────────────────────────────────
     def paintEvent(self, event):
@@ -87,6 +94,8 @@ class DesktopPet(QWidget):
         if event.button() == Qt.LeftButton:
             self.dragging = True
             self.state    = "drag"
+            self.vel_x = 0
+            self.vel_y = 0
             pos = event.globalPosition().toPoint()
             self.drag_offset_x = pos.x() - self.pos().x()
             self.drag_offset_y = pos.y() - self.pos().y()
@@ -94,16 +103,28 @@ class DesktopPet(QWidget):
     def mouseMoveEvent(self, event):
         if self.dragging:
             pos = event.globalPosition().toPoint()
+
+            # 🔥 mover o pet com o mouse
             self.pos_x = float(pos.x() - self.drag_offset_x)
             self.pos_y = float(pos.y() - self.drag_offset_y)
             self.move(int(self.pos_x), int(self.pos_y))
+
+            # 🔥 calcular velocidade (pra jogar depois)
+            if self.last_mouse_pos:
+                dx = pos.x() - self.last_mouse_pos.x()
+                dy = pos.y() - self.last_mouse_pos.y()
+
+                self.vel_x = dx * 0.3
+                self.vel_y = dy * 0.3
+
+            self.last_mouse_pos = pos
+        
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.dragging = False
             self.state    = "fall"
-        elif event.button() == Qt.RightButton:
-            self.state = "jump"
+            self.vel_y = 2
 
     def keyPressEvent(self, event):
         if event.key() in (Qt.Key_Escape, Qt.Key_Q):

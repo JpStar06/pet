@@ -1,55 +1,49 @@
 import os
 from PySide6.QtGui import QPixmap
-from PySide6.QtCore import Qt
 
 
-# Mapeamento estado → lista de frames (nomes dos arquivos sem extensão)
+# ── Mapeamento estado → frames ───────────────────────────────────────────
 STATE_FRAMES = {
     "idle":        ["shime1", "shime1b"],
     "walk":        ["shime2", "shime2b", "shime3", "shime3b"],
     "fall":        ["shime4", "shime18", "shime19"],
     "climb":       ["shime23", "shime24", "shime25"],
-    "go_to_climb": ["shime2", "shime2b", "shime3", "shime3b"],  # reutiliza climb
+    "go_to_climb": ["shime2", "shime2b", "shime3", "shime3b"],
     "idle_b":      ["shime26", "shime27", "shime28", "shime29",
                     "shime30", "shime31", "shime32", "shime33"],
-    "drag":        ["shime5"],   # frame único — ajuste se quiser
+    "drag":        ["shime5", "shime6"],
 }
 
-# Estados que usam idle_b como animação alternativa (sorteado no behavior)
-IDLE_B_STATES = {"idle_b"}
-
-# Velocidade de troca de frame (em ticks) por estado
+# ── Velocidade por estado ────────────────────────────────────────────────
 STATE_ANIM_SPEED = {
-    "idle":        12,
-    "walk":        6,
-    "fall":        8,
+    "idle":        30,
+    "walk":        25,
+    "fall":        0,   # ignorado (mantido só por compatibilidade)
     "climb":       6,
-    "go_to_climb": 6,
-    "idle_b":      10,
-    "drag":        2,
+    "go_to_climb": 25,
+    "idle_b":      30,
+    "drag":        20,
 }
+
 DEFAULT_SPEED = 10
+
+# ── Estados que NÃO usam loop (controlados por lógica) ────────────────────
+NON_LOOPING_STATES = {"fall"}
 
 
 class AnimationSystem:
     def __init__(self, sprites_dir: str):
-        """
-        sprites_dir: caminho para a pasta com os .png
-        ex: "sprites/miku"
-        """
         self.sprites_dir = sprites_dir
         self._cache: dict[str, QPixmap] = {}
         self._load_all()
 
-        self.current_state  = "idle"
-        self.frame_index    = 0
-        self.frame_counter  = 0
+        self.current_state = "idle"
+        self.frame_index   = 0
+        self.frame_counter = 0
 
     # ── Carregamento ─────────────────────────────────────────────────────
     def _load_all(self):
-        all_names = set()
-        for frames in STATE_FRAMES.values():
-            all_names.update(frames)
+        all_names = {name for frames in STATE_FRAMES.values() for name in frames}
 
         for name in all_names:
             path = os.path.join(self.sprites_dir, f"{name}.png")
@@ -58,13 +52,17 @@ class AnimationSystem:
             else:
                 print(f"[AnimationSystem] sprite não encontrado: {path}")
 
-    # ── Atualização por tick ──────────────────────────────────────────────
+    # ── Update (loop apenas para estados normais) ─────────────────────────
     def update(self, state: str):
-        # Troca de estado → reinicia animação
+        # Troca de estado → reset
         if state != self.current_state:
             self.current_state = state
             self.frame_index   = 0
             self.frame_counter = 0
+            return
+
+        # ❌ NÃO anima estados controlados por lógica
+        if state in NON_LOOPING_STATES:
             return
 
         speed = STATE_ANIM_SPEED.get(state, DEFAULT_SPEED)
@@ -76,7 +74,24 @@ class AnimationSystem:
             self.frame_index = (self.frame_index + 1) % len(frames)
 
     # ── Frame atual ───────────────────────────────────────────────────────
-    def current_pixmap(self) -> QPixmap | None:
+    def current_pixmap(self, pet=None) -> QPixmap | None:
+
+        # 🔥 FALL controlado por física (sem loop)
+        if self.current_state == "fall" and pet:
+            frames = STATE_FRAMES["fall"]
+            t = pet.fall_time
+
+            if t != 1:
+                frame = frames[1]   # começo
+            elif t > 0:
+                frame = frames[2]   # meio
+            else:
+                frame = frames[3]   # impacto
+
+            return self._cache.get(frame)
+        
+
+        # 🔄 Estados normais (loop)
         frames = STATE_FRAMES.get(self.current_state, ["shime1"])
         name   = frames[self.frame_index % len(frames)]
         return self._cache.get(name)
